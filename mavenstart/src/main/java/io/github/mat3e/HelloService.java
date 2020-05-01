@@ -22,7 +22,12 @@ public class HelloService {
 
     String prepareGreeting(String name, String lang)
     {
-        var langId=Optional.ofNullable(lang).map(Long::valueOf).orElse(FALLBACK_LANG.getId()); //zabezpieczenie lang przed byciem nullem
+        Long langId;
+       try{    langId =Optional.ofNullable(lang).map(Long::valueOf).orElse(FALLBACK_LANG.getId()); //zabezpieczenie lang przed byciem nullem
+       }catch(NumberFormatException e){
+           langId=FALLBACK_LANG.getId();
+
+       }
         var welcomeMsg = repository.findById(langId).orElse(FALLBACK_LANG).getWelcomeMsg(); //zabezpieczenie w przypadku braku takiego id
         var nameToWelcome = Optional.ofNullable(name).orElse(FALLBACK_NAME); //zabezpieczenie czy name nie jest nullem
         return welcomeMsg+" "+nameToWelcome+"!";
